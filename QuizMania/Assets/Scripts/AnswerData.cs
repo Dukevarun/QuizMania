@@ -14,6 +14,22 @@ public class AnswerData : MonoBehaviour
     [SerializeField] Sprite uncheckedToggle;
     [SerializeField] Sprite checkedToggle;
 
+    [Header("References")]
+    [SerializeField] GameEvents events;
+
+    private RectTransform rect;
+    public RectTransform Rect
+    {
+        get
+        {
+            if(rect == null)
+            {
+                rect = GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
+            }
+            return rect;
+        }
+    }
+
     private int answerIndex = -1;
     public int AnswerIndex
     {
@@ -21,5 +37,35 @@ public class AnswerData : MonoBehaviour
         {
             return answerIndex;
         }
+    }
+
+    private bool isChecked = false;
+
+    public void UpdateData(string info, int index)
+    {
+        infoTextObject.text = info;
+        answerIndex = index;
+    }
+
+    public void Reset()
+    {
+        isChecked = false;
+        UpdateUI();
+    }
+
+    public void SwitchState()
+    {
+        isChecked = !isChecked;
+        UpdateUI();
+
+        if (events.UpdateQuestionAnswer != null)
+        {
+            events.UpdateQuestionAnswer(this);
+        }
+    }
+
+    void UpdateUI()
+    {
+        toggle.sprite = (isChecked) ? checkedToggle : uncheckedToggle;
     }
 }

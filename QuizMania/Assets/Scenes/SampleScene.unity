@@ -355,6 +355,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94d7805ce122de4aa4eaae3bd91927d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  events: {fileID: 11400000, guid: 2d50eba1a2f06984d833fbaa03b2be65, type: 2}
+  answerPrefab: {fileID: 4648938936190740581, guid: a95d524e03f82324cbf4a7b05053eac7, type: 3}
+  uIElements:
+    answersContentArea: {fileID: 1940713050}
+    questionInfoTextObject: {fileID: 1732011028}
+    scoreText: {fileID: 1107805298}
+    resolutionBG: {fileID: 816501450}
+    resolutionStateInfoText: {fileID: 31814368}
+    resolutionScoreText: {fileID: 1935433784}
+    highScoreText: {fileID: 1769789877}
+    mainCanvasGroup: {fileID: 637260941}
+    finishUIElements: {fileID: 1072743128}
+  parameters:
+    margins: 15
 --- !u!114 &281208370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -367,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40ca011db1235ab4396363eeeffa80f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  events: {fileID: 0}
+  events: {fileID: 11400000, guid: 2d50eba1a2f06984d833fbaa03b2be65, type: 2}
 --- !u!4 &281208371
 Transform:
   m_ObjectHideFlags: 0
