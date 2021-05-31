@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -18,6 +19,8 @@ public class GameManager : MonoBehaviour
     private List<AnswerData> pickedAnsweres = new List<AnswerData>();
     private List<int> finishedQuestions = new List<int>();
     private int currentQuestion = 0;
+
+    private IEnumerator iEWaitTillNextRound = null;
 
     // Start is called before the first frame update
     void Start()
@@ -78,6 +81,90 @@ public class GameManager : MonoBehaviour
         {
             questions[i] = (Question)objects[i];
         }
+    }
+
+
+    public void UpdateAnswers (AnswerData newAnswer)
+    {
+        if (Questions[currentQuestion].GetAnswerType == Question.AnswerType.Single)
+        {
+            foreach (var answer in pickedAnsweres)
+            {
+                if (answer != newAnswer)
+                {
+                    answer.Reset();
+                }
+                pickedAnsweres.Clear();
+                pickedAnsweres.Add(newAnswer);
+            }
+        }
+        else
+        {
+            bool alreadyPicked = pickedAnsweres.Exists(x => x == newAnswer);
+            if (alreadyPicked)
+            {
+                pickedAnsweres.Remove(newAnswer);
+            }
+            else
+            {
+                pickedAnsweres.Add(newAnswer);
+            }
+        }
+    }
+
+    public void Accept()
+    {
+        bool isCorrect = CheckAnswers();
+        finishedQuestions.Add(currentQuestion);
+
+        UpdateScore((isCorrect) ? Questions[currentQuestion].AddScore : -Questions[currentQuestion].AddScore);
+
+        if (iEWaitTillNextRound != null)
+        {
+            StopCoroutine(iEWaitTillNextRound);
+        }
+        iEWaitTillNextRound = WaitTillNextRound();
+        StartCoroutine(iEWaitTillNextRound);
+    }
+
+    private bool CheckAnswers()
+    {
+        if (!CompareAnswers())
+        {
+            return false;
+        }
+        return true;
+    }
+
+    bool CompareAnswers()
+    {
+        if (pickedAnsweres.Count > 0)
+        {
+            List<int> correctAnswers = Questions[currentQuestion].GetCorrectAnswers();
+            List<int> pickAnswers = pickedAnsweres.Select(x => x.AnswerIndex).ToList();
+
+            var first = correctAnswers.Except(pickAnswers).ToList();
+            var second = pickAnswers.Except(correctAnswers).ToList();
+
+            return !first.Any() && !second.Any();
+        }
+        return false;
+    }
+
+    private void UpdateScore(int score)
+    {
+        events.CurrentFinalScore += score;
+
+        if (events.ScoreUpdated != null)
+        {
+            events.ScoreUpdated();
+        }
+    }
+
+    IEnumerator WaitTillNextRound ()
+    {
+        yield return new WaitForSeconds(GameUtility.ResolutionDelayTime);
+        Display();
     }
 
     // Update is called once per frame
