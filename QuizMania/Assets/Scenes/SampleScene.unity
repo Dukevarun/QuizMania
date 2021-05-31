@@ -361,6 +361,7 @@ MonoBehaviour:
     answersContentArea: {fileID: 1940713050}
     questionInfoTextObject: {fileID: 1732011028}
     scoreText: {fileID: 1107805298}
+    resolutionScreenAnimator: {fileID: 816501453}
     resolutionBG: {fileID: 816501450}
     resolutionStateInfoText: {fileID: 31814368}
     resolutionScoreText: {fileID: 1935433784}
@@ -369,6 +370,9 @@ MonoBehaviour:
     finishUIElements: {fileID: 1072743128}
   parameters:
     margins: 15
+    correctBGColor: {r: 0.18431373, g: 0.7647059, b: 0.14901961, a: 1}
+    incorrectBGColor: {r: 0.7647059, g: 0.15686275, b: 0.14901961, a: 1}
+    finalBGColor: {r: 0.20784314, g: 0.5058824, b: 0.85882354, a: 1}
 --- !u!114 &281208370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -818,7 +822,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 361109080}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 281208370}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: Accept
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &361109080
 MonoBehaviour:
   m_ObjectHideFlags: 0

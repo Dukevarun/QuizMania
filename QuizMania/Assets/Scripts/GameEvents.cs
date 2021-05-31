@@ -18,7 +18,10 @@ public class GameEvents : ScriptableObject
     public ScoreUpdatedCallback ScoreUpdated;
 
     [HideInInspector]
-    public int CurrentFinalScore; 
+    public int currentFinalScore;
+
+    [HideInInspector]
+    public int startupHighScore;
 
     // Start is called before the first frame update
     void Start()

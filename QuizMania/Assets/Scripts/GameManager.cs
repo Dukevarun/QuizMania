@@ -22,15 +22,35 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator iEWaitTillNextRound = null;
 
+    private bool IsFinished
+    {
+        get
+        {
+            return (finishedQuestions.Count < Questions.Length) ? false : true;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         LoadQuestions();
 
+        events.currentFinalScore = 0;
+
         var seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         UnityEngine.Random.InitState(seed);
 
         Display();
+    }
+
+    private void OnEnable()
+    {
+        events.UpdateQuestionAnswer += UpdateAnswers;
+    }
+
+    private void OnDisable()
+    {
+        events.UpdateQuestionAnswer -= UpdateAnswers;
     }
 
     public void EraseAnswers()
@@ -119,6 +139,13 @@ public class GameManager : MonoBehaviour
 
         UpdateScore((isCorrect) ? Questions[currentQuestion].AddScore : -Questions[currentQuestion].AddScore);
 
+        var type = (IsFinished) ? UIManager.ResolutionScreenType.Finish : (isCorrect) ? UIManager.ResolutionScreenType.Correct : UIManager.ResolutionScreenType.Incorrect;
+
+        if (events.DisplayResolutionScreen != null)
+        {
+            events.DisplayResolutionScreen(type, Questions[currentQuestion].AddScore);
+        }
+
         if (iEWaitTillNextRound != null)
         {
             StopCoroutine(iEWaitTillNextRound);
@@ -146,14 +173,14 @@ public class GameManager : MonoBehaviour
             var first = correctAnswers.Except(pickAnswers).ToList();
             var second = pickAnswers.Except(correctAnswers).ToList();
 
-            return !first.Any() && !second.Any();
+            return (!first.Any() && !second.Any());
         }
         return false;
     }
 
     private void UpdateScore(int score)
     {
-        events.CurrentFinalScore += score;
+        events.currentFinalScore += score;
 
         if (events.ScoreUpdated != null)
         {

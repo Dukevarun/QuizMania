@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907a7d29ce93a54da05246c81a6b162, type: 3}
   m_Name: test
   m_EditorClassIdentifier: 
-  info: 'Choose correct answers:'
-  answers: []
+  info: 2+2=?
+  answers:
+  - info: 1
+    isCorrect: 0
+  - info: 4
+    isCorrect: 1
   useTimer: 0
   timer: 0
-  answerType: 0
+  answerType: 1
   addScore: 10

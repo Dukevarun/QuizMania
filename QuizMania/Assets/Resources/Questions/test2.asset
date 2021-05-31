@@ -20,5 +20,5 @@ MonoBehaviour:
     isCorrect: 1
   useTimer: 0
   timer: 0
-  answerType: 0
+  answerType: 1
   addScore: 10
