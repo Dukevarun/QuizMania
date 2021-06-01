@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a58fb6c0a9b7e746ba78fc83a801029, type: 3}
   m_Name: GameEvents
   m_EditorClassIdentifier: 
-  CurrentFinalScore: 0
+  currentFinalScore: 10
+  startupHighScore: 10

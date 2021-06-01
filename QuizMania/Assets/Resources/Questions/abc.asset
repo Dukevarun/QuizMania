@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1907a7d29ce93a54da05246c81a6b162, type: 3}
-  m_Name: test2
+  m_Name: abc
   m_EditorClassIdentifier: 
-  info: asdasasfafwgwbw
+  info: 2+2=?
   answers:
-  - info: sdad
+  - info: 2
     isCorrect: 0
-  - info: rgegsdc
+  - info: 4
     isCorrect: 1
-  useTimer: 0
-  timer: 0
-  answerType: 1
+  useTimer: 1
+  timer: 8
+  answerType: 0
   addScore: 10

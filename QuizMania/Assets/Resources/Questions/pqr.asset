@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1907a7d29ce93a54da05246c81a6b162, type: 3}
-  m_Name: test1
+  m_Name: pqr
   m_EditorClassIdentifier: 
-  info: how are you?
+  info: Am I cool
   answers:
-  - info: Fine
+  - info: Yes
     isCorrect: 1
-  - info: Not fine
+  - info: No
     isCorrect: 0
   useTimer: 1
-  timer: 8
+  timer: 4
   answerType: 1
   addScore: 10

@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1907a7d29ce93a54da05246c81a6b162, type: 3}
-  m_Name: test
+  m_Name: lmn
   m_EditorClassIdentifier: 
-  info: 2+2=?
+  info: where are you?
   answers:
-  - info: 1
-    isCorrect: 0
-  - info: 4
+  - info: Home
     isCorrect: 1
-  useTimer: 1
-  timer: 4
-  answerType: 1
+  - info: Street
+    isCorrect: 0
+  - info: Desk
+    isCorrect: 1
+  useTimer: 0
+  timer: 0
+  answerType: 0
   addScore: 10
