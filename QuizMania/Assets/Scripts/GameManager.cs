@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,11 +18,19 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] GameEvents events = null;
 
+    [SerializeField] Animator timerAnimator = null;
+    [SerializeField] TextMeshProUGUI timerText = null;
+    [SerializeField] Color timerHalfWayOutColor = Color.yellow;
+    [SerializeField] Color timerAlmostOutColor = Color.red;
+
     private List<AnswerData> pickedAnsweres = new List<AnswerData>();
     private List<int> finishedQuestions = new List<int>();
     private int currentQuestion = 0;
 
     private IEnumerator iEWaitTillNextRound = null;
+    private IEnumerator iEStartTimer;
+    private Color timerDefaultColor;
+    private int timerStateParameterHash = 0;
 
     private bool IsFinished
     {
@@ -30,12 +40,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        events.currentFinalScore = 0;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        events.startupHighScore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
+        timerDefaultColor = timerText.color;
         LoadQuestions();
 
-        events.currentFinalScore = 0;
+        timerStateParameterHash = Animator.StringToHash("TimerState");
 
         var seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
         UnityEngine.Random.InitState(seed);
@@ -71,6 +88,11 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("OOPS! Something went wrong while trying to display new Question UI Data. GameEvents.UpdateQuestionUI is null. Issue occured in GameManager.Display() method.");
         }
+
+        if (question.UseTimer)
+        {
+            UpdateTimer(question.UseTimer);
+        }
     }
 
     Question GetRandomQuestion()
@@ -80,7 +102,7 @@ public class GameManager : MonoBehaviour
         return Questions[currentQuestion];
     }
 
-    int GetRandomQuestionIndex ()
+    int GetRandomQuestionIndex()
     {
         var random = 0;
         if (finishedQuestions.Count < Questions.Length)
@@ -104,7 +126,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void UpdateAnswers (AnswerData newAnswer)
+    public void UpdateAnswers(AnswerData newAnswer)
     {
         if (Questions[currentQuestion].GetAnswerType == Question.AnswerType.Single)
         {
@@ -134,10 +156,16 @@ public class GameManager : MonoBehaviour
 
     public void Accept()
     {
+        UpdateTimer(false);
         bool isCorrect = CheckAnswers();
         finishedQuestions.Add(currentQuestion);
 
         UpdateScore((isCorrect) ? Questions[currentQuestion].AddScore : -Questions[currentQuestion].AddScore);
+
+        if (IsFinished)
+        {
+            SetHighScore();
+        }
 
         var type = (IsFinished) ? UIManager.ResolutionScreenType.Finish : (isCorrect) ? UIManager.ResolutionScreenType.Correct : UIManager.ResolutionScreenType.Incorrect;
 
@@ -188,15 +216,79 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator WaitTillNextRound ()
+    IEnumerator WaitTillNextRound()
     {
         yield return new WaitForSeconds(GameUtility.ResolutionDelayTime);
         Display();
     }
 
+    void UpdateTimer(bool state)
+    {
+        switch (state)
+        {
+            case true:
+                iEStartTimer = StartTimer();
+                StartCoroutine(iEStartTimer);
+                timerAnimator.SetInteger(timerStateParameterHash, 2);
+                break;
+            case false:
+                if (iEStartTimer != null)
+                {
+                    StopCoroutine(iEStartTimer);
+                }
+                timerAnimator.SetInteger(timerStateParameterHash, 1);
+                break;
+            default:
+        }
+    }
+
+    IEnumerator StartTimer()
+    {
+        var totalTime = Questions[currentQuestion].Timer;
+        var timeLeft = totalTime;
+
+        timerText.color = timerDefaultColor;
+
+        while (timeLeft > 0)
+        {
+            timeLeft--;
+            if (timeLeft < totalTime / 2 && timeLeft > totalTime / 4)
+            {
+                timerText.color = timerHalfWayOutColor;
+            }
+            if (timeLeft < totalTime / 4)
+            {
+                timerText.color = timerAlmostOutColor;
+            }
+            timerText.text = timeLeft.ToString();
+            yield return new WaitForSeconds(1.0f);
+        }
+        Accept();
+    }
+
+
+    private void SetHighScore()
+    {
+        var highscore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
+        if (highscore < events.currentFinalScore)
+        {
+            PlayerPrefs.SetInt(GameUtility.SavePrefKey, events.currentFinalScore);
+        }
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

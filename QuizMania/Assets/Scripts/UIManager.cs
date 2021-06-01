@@ -171,6 +171,7 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        UpdateScoreUI();
         resolutionStateParameterHash = Animator.StringToHash("ScreenState");
     }
 
@@ -178,12 +179,14 @@ public class UIManager : MonoBehaviour
     {
         events.UpdateQuestionUI += UpdateQuestionUI;
         events.DisplayResolutionScreen += DisplayResolution;
+        events.ScoreUpdated += UpdateScoreUI;
     }
 
     private void OnDisable()
     {
         events.UpdateQuestionUI -= UpdateQuestionUI;
         events.DisplayResolutionScreen += DisplayResolution;
+        events.ScoreUpdated -= UpdateScoreUI;
     }
 
     void UpdateQuestionUI(Question question)
@@ -285,6 +288,12 @@ public class UIManager : MonoBehaviour
         uIElements.ResolutionScreenAnimator.SetInteger(resolutionStateParameterHash, 0);
         uIElements.MainCanvasGroup.blocksRaycasts = true;
     }
+
+    void UpdateScoreUI()
+    {
+        uIElements.ScoreText.text = "Score: " + events.currentFinalScore;
+    }
+
 
     // Update is called once per frame
     void Update()
