@@ -125,7 +125,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void UpdateAnswers(AnswerData newAnswer)
     {
         if (Questions[currentQuestion].GetAnswerType == Question.AnswerType.Single)
@@ -136,9 +135,9 @@ public class GameManager : MonoBehaviour
                 {
                     answer.Reset();
                 }
-                pickedAnsweres.Clear();
-                pickedAnsweres.Add(newAnswer);
             }
+            pickedAnsweres.Clear();
+            pickedAnsweres.Add(newAnswer);
         }
         else
         {
@@ -174,12 +173,17 @@ public class GameManager : MonoBehaviour
             events.DisplayResolutionScreen(type, Questions[currentQuestion].AddScore);
         }
 
-        if (iEWaitTillNextRound != null)
+        AudioManager.instance.PlaySound((isCorrect) ? "CorrectSFX" : "IncorrectSFX");
+
+        if (type != UIManager.ResolutionScreenType.Finish)
         {
-            StopCoroutine(iEWaitTillNextRound);
-        }
-        iEWaitTillNextRound = WaitTillNextRound();
-        StartCoroutine(iEWaitTillNextRound);
+            if (iEWaitTillNextRound != null)
+            {
+                StopCoroutine(iEWaitTillNextRound);
+            }
+            iEWaitTillNextRound = WaitTillNextRound();
+            StartCoroutine(iEWaitTillNextRound);
+        }        
     }
 
     private bool CheckAnswers()
@@ -252,6 +256,8 @@ public class GameManager : MonoBehaviour
         while (timeLeft > 0)
         {
             timeLeft--;
+            AudioManager.instance.PlaySound("CountdownSFX");
+
             if (timeLeft < totalTime / 2 && timeLeft > totalTime / 4)
             {
                 timerText.color = timerHalfWayOutColor;
