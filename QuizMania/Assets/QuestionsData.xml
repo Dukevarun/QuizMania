@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<Data xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <questions>
+    <Question>
+      <info>Number of rainbow colors</info>
+      <answers>
+        <Answer>
+          <info>4</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+        <Answer>
+          <info>5</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+        <Answer>
+          <info>7</info>
+          <isCorrect>true</isCorrect>
+        </Answer>
+        <Answer>
+          <info>9</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+      </answers>
+      <useTimer>false</useTimer>
+      <answerType>Single</answerType>
+      <timer>0</timer>
+      <addScore>10</addScore>
+    </Question>
+    <Question>
+      <info>inventor of the telephone</info>
+      <answers>
+        <Answer>
+          <info>Thomas Alva Edison</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+        <Answer>
+          <info>Nikola Tesla</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+        <Answer>
+          <info>Marie Curie</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+        <Answer>
+          <info>Graham Bell</info>
+          <isCorrect>true</isCorrect>
+        </Answer>
+      </answers>
+      <useTimer>false</useTimer>
+      <answerType>Single</answerType>
+      <timer>0</timer>
+      <addScore>10</addScore>
+    </Question>
+    <Question>
+      <info>World's fastest sprinter</info>
+      <answers>
+        <Answer>
+          <info>Usain Bolt</info>
+          <isCorrect>true</isCorrect>
+        </Answer>
+        <Answer>
+          <info>Micheal Phelps</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+        <Answer>
+          <info>Asafa Powell</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+        <Answer>
+          <info>Tyson Gay</info>
+          <isCorrect>false</isCorrect>
+        </Answer>
+      </answers>
+      <useTimer>true</useTimer>
+      <answerType>Single</answerType>
+      <timer>10</timer>
+      <addScore>10</addScore>
+    </Question>
+  </questions>
+</Data>

@@ -191,7 +191,7 @@ public class UIManager : MonoBehaviour
 
     void UpdateQuestionUI(Question question)
     {
-        uIElements.QuestionInfoTextObject.text = question.Info;
+        uIElements.QuestionInfoTextObject.text = question.info;
         CreateAnswers(question);
     }
 
@@ -200,10 +200,10 @@ public class UIManager : MonoBehaviour
         EraseAnswers();
 
         float offset = 0 - parameters.Margins;
-        for (int i = 0; i < question.Answers.Length; i++)
+        for (int i = 0; i < question.answers.Length; i++)
         {
             AnswerData newAnswer = (AnswerData)Instantiate(answerPrefab, uIElements.AnswersContentArea);
-            newAnswer.UpdateData(question.Answers[i].Info, i);
+            newAnswer.UpdateData(question.answers[i].info, i);
 
             newAnswer.Rect.anchoredPosition = new Vector2(0, offset);
 
@@ -272,10 +272,17 @@ public class UIManager : MonoBehaviour
 
     IEnumerator CalculateScore ()
     {
-        var scoreValue = 0;
-        while (scoreValue < events.currentFinalScore)
+        if (events.currentFinalScore == 0)
         {
-            scoreValue++;
+            uIElements.ResolutionScoreText.text = 0.ToString();
+            yield break;
+        }
+
+        var scoreValue = 0;
+        var scoreMoreThanZero = events.currentFinalScore > 0;
+        while ((scoreMoreThanZero) ? scoreValue < events.currentFinalScore : scoreValue > events.currentFinalScore)
+        {
+            scoreValue += scoreMoreThanZero ? 1 : -1;
             uIElements.ResolutionScoreText.text = scoreValue.ToString();
 
             yield return null;

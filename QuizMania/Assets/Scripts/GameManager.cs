@@ -7,15 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    Question[] questions = null;
-    public Question[] Questions
-    {
-        get
-        {
-            return questions;
-        }
-    }
-
+    private Data data = new Data();
+    
     [SerializeField] GameEvents events = null;
 
     [SerializeField] Animator timerAnimator = null;
@@ -36,7 +29,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return (finishedQuestions.Count < Questions.Length) ? false : true;
+            return (finishedQuestions.Count < data.questions.Length) ? false : true;
         }
     }
 
@@ -50,7 +43,7 @@ public class GameManager : MonoBehaviour
     {
         events.startupHighScore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
         timerDefaultColor = timerText.color;
-        LoadQuestions();
+        LoadData();
 
         timerStateParameterHash = Animator.StringToHash("TimerState");
 
@@ -89,9 +82,9 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("OOPS! Something went wrong while trying to display new Question UI Data. GameEvents.UpdateQuestionUI is null. Issue occured in GameManager.Display() method.");
         }
 
-        if (question.UseTimer)
+        if (question.useTimer)
         {
-            UpdateTimer(question.UseTimer);
+            UpdateTimer(question.useTimer);
         }
     }
 
@@ -99,35 +92,30 @@ public class GameManager : MonoBehaviour
     {
         var randomIndex = GetRandomQuestionIndex();
         currentQuestion = randomIndex;
-        return Questions[currentQuestion];
+        return data.questions[currentQuestion];
     }
 
     int GetRandomQuestionIndex()
     {
         var random = 0;
-        if (finishedQuestions.Count < Questions.Length)
+        if (finishedQuestions.Count < data.questions.Length)
         {
             do
             {
-                random = UnityEngine.Random.Range(0, Questions.Length);
+                random = UnityEngine.Random.Range(0, data.questions.Length);
             } while (finishedQuestions.Contains(random) || random == currentQuestion);
         }
         return random;
     }
 
-    void LoadQuestions()
+    void LoadData()
     {
-        Object[] objects = Resources.LoadAll("Questions", typeof(Question));
-        questions = new Question[objects.Length];
-        for (int i = 0; i < objects.Length; i++)
-        {
-            questions[i] = (Question)objects[i];
-        }
+        data = Data.Fetch();
     }
 
     public void UpdateAnswers(AnswerData newAnswer)
     {
-        if (Questions[currentQuestion].GetAnswerType == Question.AnswerType.Single)
+        if (data.questions[currentQuestion].answerType == AnswerType.Single)
         {
             foreach (var answer in pickedAnsweres)
             {
@@ -159,7 +147,7 @@ public class GameManager : MonoBehaviour
         bool isCorrect = CheckAnswers();
         finishedQuestions.Add(currentQuestion);
 
-        UpdateScore((isCorrect) ? Questions[currentQuestion].AddScore : -Questions[currentQuestion].AddScore);
+        UpdateScore((isCorrect) ? data.questions[currentQuestion].addScore : -data.questions[currentQuestion].addScore);
 
         if (IsFinished)
         {
@@ -170,7 +158,7 @@ public class GameManager : MonoBehaviour
 
         if (events.DisplayResolutionScreen != null)
         {
-            events.DisplayResolutionScreen(type, Questions[currentQuestion].AddScore);
+            events.DisplayResolutionScreen(type, data.questions[currentQuestion].addScore);
         }
 
         AudioManager.instance.PlaySound((isCorrect) ? "CorrectSFX" : "IncorrectSFX");
@@ -199,7 +187,7 @@ public class GameManager : MonoBehaviour
     {
         if (pickedAnsweres.Count > 0)
         {
-            List<int> correctAnswers = Questions[currentQuestion].GetCorrectAnswers();
+            List<int> correctAnswers = data.questions[currentQuestion].GetCorrectAnswers();
             List<int> pickAnswers = pickedAnsweres.Select(x => x.AnswerIndex).ToList();
 
             var first = correctAnswers.Except(pickAnswers).ToList();
@@ -213,6 +201,10 @@ public class GameManager : MonoBehaviour
     private void UpdateScore(int score)
     {
         events.currentFinalScore += score;
+        if (events.currentFinalScore < 0)
+        {
+            events.currentFinalScore = 0;
+        }
 
         if (events.ScoreUpdated != null)
         {
@@ -248,7 +240,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartTimer()
     {
-        var totalTime = Questions[currentQuestion].Timer;
+        var totalTime = data.questions[currentQuestion].timer;
         var timeLeft = totalTime;
 
         timerText.color = timerDefaultColor;

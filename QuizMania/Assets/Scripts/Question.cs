@@ -1,98 +1,41 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct Answer
+public enum AnswerType
 {
-    [SerializeField] private string info;
-    public string Info
-    {
-        get
-        {
-            return info;
-        }
-    }
-    [SerializeField] private bool isCorrect;
-    public bool IsCorrect
-    {
-        get
-        {
-            return isCorrect;
-        }
-    }
+    Multi,
+    Single
 }
 
-[CreateAssetMenu(fileName = "New Question", menuName = "Quiz/new Question")]
-public class Question : ScriptableObject
+[Serializable]
+public class Answer
 {
-    public enum AnswerType
-    {
-        Multi,
-        Single
-    }
+    public string info = string.Empty;
+    public bool isCorrect = false;
 
-    [SerializeField] private string info = string.Empty;
-    public string Info
-    {
-        get
-        {
-            return info;
-        }
-    }
+    public Answer() { }
+}
 
-    [SerializeField] Answer[] answers = null;
-    public Answer[] Answers
-    {
-        get
-        {
-            return answers;
-        }
-    }
+[Serializable]
+public class Question
+{
+    public String info = null;
+    public Answer[] answers = null;
+    public Boolean useTimer = false;
+    public AnswerType answerType = AnswerType.Single;
+    public Int32 timer = 0;
+    public Int32 addScore = 0;
 
-    // Parameters
-    [SerializeField] private bool useTimer = false;
-    public bool UseTimer
-    {
-        get
-        {
-            return useTimer;
-        }
-    }
-
-    [SerializeField] private int timer = 0;
-    public int Timer
-    {
-        get
-        {
-            return timer;
-        }
-    }
-
-    [SerializeField] private AnswerType answerType = AnswerType.Multi;
-    public AnswerType GetAnswerType
-    {
-        get
-        {
-            return answerType;
-        }
-    }
-
-    [SerializeField] private int addScore = 10;
-    public int AddScore
-    {
-        get
-        {
-            return addScore;
-        }
-    }
+    public Question() { }
 
     public List<int> GetCorrectAnswers()
     {
         List<int> CorrectAnswers = new List<int>();
-        for (int i = 0; i < Answers.Length; i++)
+        for (int i = 0; i < answers.Length; i++)
         {
-            if(Answers[i].IsCorrect)
+            if (answers[i].isCorrect)
             {
                 CorrectAnswers.Add(i);
             }
